@@ -1463,7 +1463,6 @@ function copyForGemini(section) {
   let warnEl = null;
 
   if (section === 'la') {
-    // Only check false items (2 and 4) — true items don't need correction
     hasContent = !!(g('la_corr2').trim() || g('la_corr4').trim());
     warnEl = document.getElementById('geminiWarnLA');
   } else if (section === 'ra') {
@@ -1475,23 +1474,142 @@ function copyForGemini(section) {
     warnEl = document.getElementById('geminiWarnW');
   }
 
-  // Show/hide warning and block/unblock button
   if (warnEl) {
     if (!hasContent) {
       warnEl.classList.add('visible');
-      return; // Block — do not copy or open modal
+      return;
     } else {
       warnEl.classList.remove('visible');
     }
   }
 
-    // Auto-copy to clipboard then show success modal
-  navigator.clipboard.writeText(prompt).then(() => {
+  // ── Build prompt text for each section ──
+  let geminiText = '';
+
+  if (section === 'la') {
+    const corr2 = g('la_corr2') || '(sin respuesta)';
+    const corr4 = g('la_corr4') || '(sin respuesta)';
+    geminiText = `Eres un profesor de inglés de nivel B1 (CEFR) en Chile. Evalúa las correcciones de los ítems FALSOS de una sección de Listening True/False.
+
+El audio era sobre un tour en el Field Museum de Chicago.
+
+ÍTEM 2 — El enunciado decía: "Photography is not allowed in the Ancient Egypt exhibition."
+Esta afirmación es FALSA. La información correcta del audio es: "Photography is allowed in the exhibition, but flash is not permitted."
+CORRECCIÓN DEL ESTUDIANTE: ${corr2}
+
+ÍTEM 4 — El enunciado decía: "The gift shop closes at 3 pm."
+Esta afirmación es FALSA. La información correcta del audio es: "The gift shop closes at 2 pm."
+CORRECCIÓN DEL ESTUDIANTE: ${corr4}
+
+INSTRUCCIONES:
+- Este es un ejercicio de LISTENING, no de writing. Acepta errores ortográficos si el significado es correcto. Solo evalúa si el estudiante captó la información correcta del audio.
+- Puntaje: 1 punto si es correcta, 0 si es incorrecta.
+
+Responde SIEMPRE en este formato exacto, con dos bloques separados:
+
+BLOQUE 1 — EVALUACIÓN:
+ÍTEM 2: [puntaje] — [justificación breve en español]
+ÍTEM 4: [puntaje] — [justificación breve en español]
+
+BLOQUE 2 — PUNTAJES PARA INGRESAR EN EL MOCK TEST:
+┌──────────────────────────────────────┐
+│ Ítem 2 (máx. 1 pt):  [puntaje]      │
+│ Ítem 4 (máx. 1 pt):  [puntaje]      │
+│ TOTAL CORRECCIONES:  [suma] / 2 pts  │
+└──────────────────────────────────────┘
+Ingresa cada puntaje del Bloque 2 en el campo correspondiente del mock test.`;
+
+  } else if (section === 'ra') {
+    const ans1 = g('ra_ans1') || '(sin respuesta)';
+    const ans2 = g('ra_ans2') || '(sin respuesta)';
+    const ans3 = g('ra_ans3') || '(sin respuesta)';
+    const ans4 = g('ra_ans4') || '(sin respuesta)';
+    const ans5 = g('ra_ans5') || '(sin respuesta)';
+    geminiText = `Eres un profesor de inglés de nivel B1 (CEFR) en Chile. Evalúa las respuestas de comprensión lectora.
+
+El texto era un email de Emma (estudiante de intercambio en Sydney) a Carlos. Emma lleva dos meses en Sydney, fue a Bondi Beach ayer con sus roommates a surfear, planea ir al Gold Coast y las Blue Mountains el próximo mes, ha cambiado (se levanta más temprano, hace ejercicio, mejoró su inglés), y vuelve el 20 de diciembre a las 10:30 pm.
+
+PREGUNTA 1 (1 pt): How long has Emma been in Sydney?
+Respuesta esperada: She has been in Sydney for two months.
+Respuesta del estudiante: ${ans1}
+
+PREGUNTA 2 (2 pts): What TWO activities is Emma planning to do next month? Mention two.
+Respuestas aceptables: visitar playas del Gold Coast / kayaking / explorar Blue Mountains.
+Respuesta del estudiante: ${ans2}
+
+PREGUNTA 3 (1 pt): Who did Emma go to Bondi Beach with?
+Respuesta esperada: She went with her roommates.
+Respuesta del estudiante: ${ans3}
+
+PREGUNTA 4 (2 pts): What TWO changes does Emma mention about her life?
+Respuestas aceptables: se levanta más temprano / hace ejercicio / su inglés ha mejorado.
+Respuesta del estudiante: ${ans4}
+
+PREGUNTA 5 (2 pts): Why does Emma say "it would be so great to see you"?
+Respuesta esperada: porque lleva meses lejos y extraña a Carlos.
+Respuesta del estudiante: ${ans5}
+
+INSTRUCCIONES:
+- Requiere oraciones completas. Acepta variaciones si la idea es correcta.
+- Para preguntas de 2 pts: 0.5 pts si la respuesta es parcialmente correcta.
+- Acepta errores ortográficos menores y errores de artículos.
+
+Responde SIEMPRE en este formato exacto, con dos bloques separados:
+
+BLOQUE 1 — EVALUACIÓN:
+P1: [puntaje] — [justificación breve en español]
+P2: [puntaje] — [justificación breve en español]
+P3: [puntaje] — [justificación breve en español]
+P4: [puntaje] — [justificación breve en español]
+P5: [puntaje] — [justificación breve en español]
+
+BLOQUE 2 — PUNTAJES PARA INGRESAR EN EL MOCK TEST:
+┌─────────────────────────────────────┐
+│ Pregunta 1 (máx. 1 pt):  [puntaje] │
+│ Pregunta 2 (máx. 2 pts): [puntaje] │
+│ Pregunta 3 (máx. 1 pt):  [puntaje] │
+│ Pregunta 4 (máx. 2 pts): [puntaje] │
+│ Pregunta 5 (máx. 2 pts): [puntaje] │
+│ TOTAL: [suma] / 8 pts              │
+└─────────────────────────────────────┘
+Ingresa cada puntaje del Bloque 2 en el campo correspondiente del mock test.`;
+
+  } else if (section === 'w') {
+    const writing = g('writingText') || '(sin respuesta)';
+    geminiText = `Eres un profesor de inglés de nivel B1 (CEFR) en Chile. Evalúa este email informal.
+
+ESTÍMULO: Email de Emma (intercambio en Sydney). Las 5 preguntas a responder:
+1. What are you eating for breakfast today? → Present continuous
+2. What did you do yesterday? → Simple past
+3. What are you doing this weekend? → Present continuous futuro
+4. How has your life changed since you started your English course? → Present perfect
+5. What time are you coming? → Present continuous futuro
+
+RESPUESTA DEL ESTUDIANTE:
+${writing}
+
+RÚBRICA:
+1. COHERENCIA Y EXTENSIÓN (máx. 4 pts): 4=80+palabras/todas las ideas · 3.2=60-79 · 2.4=40-59 · 1.2=20-39 · 0=menos de 20
+2. VOCABULARIO (máx. 3 pts): 3=6+palabras B1 · 2.4=5 · 1.8=4 · 0.9=3 · 0=2 o menos
+3. GRAMÁTICA (máx. 3 pts): 3=máx.1 error · 2.4=2-3 · 1.8=4-5 · 0.9=6-7 · 0=8+
+4. ORTOGRAFÍA (máx. 2 pts): 2=máx.2 errores · 1.6=3-4 · 1.2=5-6 · 0.6=7-8 · 0=9+
+
+NOTAS: Estudiante chileno B1. Acepta calcos del español, errores de artículos, errores de 3a persona. Evalúa si usó los tiempos verbales correctos.
+
+COHERENCIA Y EXTENSIÓN: [pts] / 4
+VOCABULARIO: [pts] / 3
+GRAMÁTICA: [pts] / 3
+ORTOGRAFÍA: [pts] / 2
+TOTAL WRITING: [suma] / 12
+COMENTARIOS: [máx. 3 líneas en español con feedback formativo]`;
+  }
+
+  // ── Auto-copy to clipboard then show success modal ──
+  navigator.clipboard.writeText(geminiText).then(() => {
     document.getElementById('geminiSuccessModal').classList.add('active');
   }).catch(() => {
-    // Fallback for browsers without clipboard API
     const ta = document.createElement('textarea');
-    ta.value = prompt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    ta.value = geminiText; ta.style.position = 'fixed'; ta.style.opacity = '0';
     document.body.appendChild(ta); ta.select(); document.execCommand('copy');
     document.body.removeChild(ta);
     document.getElementById('geminiSuccessModal').classList.add('active');
