@@ -550,7 +550,7 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
             <div class="mc-card-q">4. The swimming pool is closed because…</div>
             <div class="mc-card-opts">
               <label class="mc-opt"><input type="radio" name="lb_q4" value="A" onchange="saveAll();updateProgress()"> A) the gym is closing early</label>
-              <label class="mc-opt"><input type="radio" name="lb_q4" value="B" onchange="saveAll();updateProgress()"> B) it is being cleaned</label>
+              <label class="mc-opt"><input type="radio" name="lb_q4" value="B" onchange="saveAll();updateProgress()"> B) they are cleaning it</label>
               <label class="mc-opt"><input type="radio" name="lb_q4" value="C" onchange="saveAll();updateProgress()"> C) there are too many people</label>
               <label class="mc-opt"><input type="radio" name="lb_q4" value="D" onchange="saveAll();updateProgress()"> D) the water is too cold</label>
             </div>
@@ -607,7 +607,7 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
             <p>Next month, my host family is taking me to the Gold Coast for a long weekend. We're going to visit the beaches and try kayaking. I'm also planning to explore the Blue Mountains with some friends from university. <span class="email-q">3) What are you doing this weekend?</span> I'm sure you have some fun plans too.</p>
             <p>My life has changed so much since I arrived. I wake up earlier, I exercise every day, and my English has improved a lot. <span class="email-q">4) How has your life changed since you started your English course?</span> I'd love to hear about your progress!</p>
             <p>I'm flying back to Chile on December 20th and my flight lands at Santiago airport at 10:30 pm. <span class="email-q">5) What time are you coming?</span> It would be so great to see you after all these months!</p>
-            <p>Miss you lots!<br><strong>Emma</strong></p>
+            <p>Bye for now! Take care!<br><strong>Emma</strong></p>
           </div>
         </div>
 
@@ -680,7 +680,7 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
         </div>
         <div class="match-row">
           <span class="match-n">4.</span>
-          <span class="match-q">"Miss you lots!"</span>
+          <span class="match-q">"Bye for now! Take care!"</span>
           <select id="rb_m4" class="match-sel" onchange="saveAll();updateProgress()">
             <option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option>
           </select>
@@ -724,7 +724,7 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
             I had such a busy day yesterday. I went to Bondi Beach with my roommates and we tried surfing for the first time. It was incredible! <strong>2) What did you do yesterday?</strong><br><br>
             Next month, my host family is taking me to the Gold Coast for a long weekend. We're going to visit the beaches and try kayaking. I'm also planning to explore the Blue Mountains with some friends from university. <strong>3) What are you doing this weekend?</strong><br><br>
             My life has changed so much since I arrived. I wake up earlier, I exercise every day, and my English has improved a lot. <strong>4) How has your life changed since you started your English course?</strong><br><br>
-            I'm flying back to Chile on December 20th and my flight lands at Santiago airport at 10:30 pm. <strong>5) What time are you coming?</strong> It would be so great to see you after all these months! Miss you lots! <strong>Emma</strong>
+            I'm flying back to Chile on December 20th and my flight lands at Santiago airport at 10:30 pm. <strong>5) What time are you coming?</strong> It would be so great to see you after all these months! Bye for now! Take care! <strong>Emma</strong>
           </div>
         </div>
 
@@ -1379,7 +1379,7 @@ function buildFeedback(la_auto,lb_auto,rb_auto) {
     {n:1,text:'The woman decides to…',correct:'C',correctText:'take a photo of the menu'},
     {n:2,text:'The train is late because…',correct:'A',correctText:'there is a technical problem'},
     {n:3,text:'The woman is at the library to…',correct:'D',correctText:'pick up a reserved book'},
-    {n:4,text:'The swimming pool is closed because…',correct:'B',correctText:'it is being cleaned'},
+    {n:4,text:'The swimming pool is closed because…',correct:'B',correctText:'they are cleaning it'},
     {n:5,text:'Mr. Williams is at the airport because…',correct:'C',correctText:'he is going to fly to London'},
   ];
   let lbHtml='';
@@ -1399,7 +1399,7 @@ function buildFeedback(la_auto,lb_auto,rb_auto) {
     {n:1,text:'"I went to Bondi Beach…and we tried surfing for the first time."',correct:'C',correctText:'Talking about past actions'},
     {n:2,text:'"We\'re going to visit the beaches and try kayaking."',correct:'A',correctText:'Talking about future plans'},
     {n:3,text:'"My English has improved a lot."',correct:'D',correctText:'Describing personal changes'},
-    {n:4,text:'"Miss you lots!"',correct:'B',correctText:'Closing remarks'},
+    {n:4,text:'"Bye for now! Take care!"',correct:'B',correctText:'Closing remarks'},
   ];
   let rbHtml='';
   rbItems.forEach(item=>{
@@ -1422,7 +1422,7 @@ function buildFeedback(la_auto,lb_auto,rb_auto) {
       {check:()=>getRadio('lb_q1')!=='C', tip:'Conversación 1: Enfócate en la acción que dice la mujer que va a hacer, no en lo que el hombre propone.'},
       {check:()=>getRadio('lb_q2')!=='A', tip:'Conversación 2: La causa del retraso se menciona explícitamente — escucha los sustantivos clave.'},
       {check:()=>getRadio('lb_q3')!=='D', tip:'Conversación 3: Identifica el propósito de la visita — ¿qué fue a buscar la mujer?'},
-      {check:()=>getRadio('lb_q4')!=='B', tip:'Conversación 4: El motivo del cierre se da en voz pasiva — "it is being cleaned".'},
+      {check:()=>getRadio('lb_q4')!=='B', tip:'Conversación 4: El motivo del cierre se menciona explícitamente — escucha quién hace la acción y qué está pasando.'},
       {check:()=>getRadio('lb_q5')!=='C', tip:'Conversación 5: Presta atención al destino del vuelo, no al número de asiento.'},
     ], 8, 6
   );
@@ -1431,7 +1431,7 @@ function buildFeedback(la_auto,lb_auto,rb_auto) {
       {check:()=>g('rb_m1')!=='C', tip:'Frase 1: "I went to…and we tried" → acciones terminadas en el pasado = Talking about past actions.'},
       {check:()=>g('rb_m2')!=='A', tip:'Frase 2: "We\'re going to…" → planes futuros = Talking about future plans.'},
       {check:()=>g('rb_m3')!=='D', tip:'Frase 3: "My English has improved" → cambio personal = Describing personal changes.'},
-      {check:()=>g('rb_m4')!=='B', tip:'Frase 4: "Miss you lots!" → despedida = Closing remarks.'},
+      {check:()=>g('rb_m4')!=='B', tip:'Frase 4: "Bye for now! Take care!" → despedida = Closing remarks.'},
     ], 4, 3
   );
 }
