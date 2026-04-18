@@ -230,6 +230,12 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
 .update-btn{display:block;width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:10px;padding:14px;font-family:'DM Serif Display',serif;font-size:1.1em;cursor:pointer;margin-top:14px;transition:all .2s;}
 .update-btn:hover{opacity:.9;transform:translateY(-1px);}
 
+/* GEMINI BUTTON — BLOCKED STATE */
+.gemini-btn.blocked{background:linear-gradient(135deg,#94a3b8,#64748b);cursor:not-allowed;opacity:.7;transform:none!important;}
+.gemini-btn.blocked:hover{opacity:.7;transform:none;}
+.gemini-warn{display:none;margin-top:10px;background:#fff7ed;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;font-size:.84em;color:#92400e;align-items:center;gap:8px;}
+.gemini-warn.visible{display:flex;}
+
 /* SUCCESS MODAL (Gemini copy confirmation) */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(2px);padding:20px;}
 .modal-overlay.active{display:flex;}
@@ -413,7 +419,7 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
         <div class="audio-container">
           <div class="audio-label">🔊 Audio Part A — Museum Tour Guide</div>
           <audio id="audioA" controls preload="metadata" playsinline onplay="trackPlay('audioA')">
-            <source src="listening-part-a.mp3" type="audio/mpeg">
+            <source src="https://github.com/Moncholate/INI5111-Midterm-Written-Mock-Test/raw/refs/heads/main/Part%20A.mp3" type="audio/mpeg">
             Tu navegador no soporta audio HTML5.
           </audio>
           <div class="play-counter" id="counter_audioA">Reproducciones: 0 / 2</div>
@@ -506,7 +512,7 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
         <div class="audio-container">
           <div class="audio-label">🔊 Audio Part B — Five Short Conversations</div>
           <audio id="audioB" controls preload="metadata" playsinline onplay="trackPlay('audioB')">
-            <source src="listening-part-b.mp3" type="audio/mpeg">
+            <source src="https://github.com/Moncholate/INI5111-Midterm-Written-Mock-Test/raw/refs/heads/main/Part%20B.mp3" type="audio/mpeg">
             Tu navegador no soporta audio HTML5.
           </audio>
           <div class="play-counter" id="counter_audioB">Reproducciones: 0 / 2</div>
@@ -727,6 +733,7 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
           oninput="updateWordCount();saveAll();updateProgress()"></textarea>
         <div class="word-counter bad" id="wordCounter">0 palabras (mínimo: 80)</div>
         <button class="gemini-btn" onclick="copyForGemini('w')">🤖 Evaluar Writing con Gemini</button>
+        <div class="gemini-warn" id="geminiWarnW">⚠️ <span>No escribiste ningún texto en el área de Writing. Escribe tu email de respuesta antes de consultar con Gemini.</span></div>
 
         <!-- RUBRIC — redesigned -->
         <div class="rubric-box">
@@ -834,20 +841,22 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
         <span style="color:#b91c1c;font-weight:600;">⚠️ Las preguntas que dejaste en blanco ya tienen 0 pts asignado automáticamente — no necesitas consultarlas con Gemini.</span></p>
         <div class="gr-section">
           <h5>🎧 Listening A — Correcciones de ítems falsos (0 o 1 punto cada uno)</h5>
-          <p style="font-size:.82em;color:var(--muted);margin-bottom:10px;">Solo los ítems 2 y 4 son falsos y requieren corrección evaluada por Gemini.</p>
-          <div class="gr-row"><label>Ítem 2 — "Photography is not allowed…"</label><input type="number" id="la_gscore2" min="0" max="1" step="1" value="0" onchange="saveAll()"></div>
-          <div class="gr-row"><label>Ítem 4 — "The gift shop closes at 3 pm."</label><input type="number" id="la_gscore4" min="0" max="1" step="1" value="0" onchange="saveAll()"></div>
+          <p style="font-size:.82em;color:var(--muted);margin-bottom:10px;">Usa el puntaje del <strong>Bloque 2</strong> que Gemini entrega al final de su respuesta. Ingresa el número exacto en cada campo.</p>
+          <div class="gr-row"><label>📝 Ítem 2 <span style="color:var(--muted);font-weight:400;">(máx. 1 pt)</span></label><input type="number" id="la_gscore2" min="0" max="1" step="1" value="0" onchange="saveAll()"></div>
+          <div class="gr-row"><label>📝 Ítem 4 <span style="color:var(--muted);font-weight:400;">(máx. 1 pt)</span></label><input type="number" id="la_gscore4" min="0" max="1" step="1" value="0" onchange="saveAll()"></div>
           <button class="gemini-btn" style="margin-top:10px;" onclick="copyForGemini('la')">🤖 Consultar correcciones con Gemini</button>
+          <div class="gemini-warn" id="geminiWarnLA">⚠️ <span>No escribiste ninguna corrección. Completa al menos una corrección en los ítems falsos antes de consultar con Gemini.</span></div>
         </div>
         <div class="gr-section">
           <h5>📖 Reading A — Preguntas abiertas</h5>
-          <p style="font-size:.82em;color:var(--muted);margin-bottom:10px;">Q1 (0–1) · Q2 (0–2) · Q3 (0–1) · Q4 (0–2) · Q5 (0–2)</p>
-          <div class="gr-row"><label>Pregunta 1 — How long has Emma been in Sydney? (máx. 1)</label><input type="number" id="ra_gscore1" min="0" max="1" step="0.5" value="0" onchange="saveAll()"></div>
-          <div class="gr-row"><label>Pregunta 2 — TWO activities next month? (máx. 2)</label><input type="number" id="ra_gscore2" min="0" max="2" step="0.5" value="0" onchange="saveAll()"></div>
-          <div class="gr-row"><label>Pregunta 3 — Who went to Bondi Beach? (máx. 1)</label><input type="number" id="ra_gscore3" min="0" max="1" step="0.5" value="0" onchange="saveAll()"></div>
-          <div class="gr-row"><label>Pregunta 4 — TWO changes? (máx. 2)</label><input type="number" id="ra_gscore4" min="0" max="2" step="0.5" value="0" onchange="saveAll()"></div>
-          <div class="gr-row"><label>Pregunta 5 — Why "so great to see you"? (máx. 2)</label><input type="number" id="ra_gscore5" min="0" max="2" step="0.5" value="0" onchange="saveAll()"></div>
+          <p style="font-size:.82em;color:var(--muted);margin-bottom:10px;">Usa el puntaje del <strong>Bloque 2</strong> que Gemini entrega al final de su respuesta. Ingresa el número exacto en cada campo.</p>
+          <div class="gr-row"><label>📝 Pregunta 1 <span style="color:var(--muted);font-weight:400;">(máx. 1 pt)</span></label><input type="number" id="ra_gscore1" min="0" max="1" step="0.5" value="0" onchange="saveAll()"></div>
+          <div class="gr-row"><label>📝 Pregunta 2 <span style="color:var(--muted);font-weight:400;">(máx. 2 pts)</span></label><input type="number" id="ra_gscore2" min="0" max="2" step="0.5" value="0" onchange="saveAll()"></div>
+          <div class="gr-row"><label>📝 Pregunta 3 <span style="color:var(--muted);font-weight:400;">(máx. 1 pt)</span></label><input type="number" id="ra_gscore3" min="0" max="1" step="0.5" value="0" onchange="saveAll()"></div>
+          <div class="gr-row"><label>📝 Pregunta 4 <span style="color:var(--muted);font-weight:400;">(máx. 2 pts)</span></label><input type="number" id="ra_gscore4" min="0" max="2" step="0.5" value="0" onchange="saveAll()"></div>
+          <div class="gr-row"><label>📝 Pregunta 5 <span style="color:var(--muted);font-weight:400;">(máx. 2 pts)</span></label><input type="number" id="ra_gscore5" min="0" max="2" step="0.5" value="0" onchange="saveAll()"></div>
           <button class="gemini-btn" style="margin-top:10px;" onclick="copyForGemini('ra')">🤖 Consultar preguntas abiertas con Gemini</button>
+          <div class="gemini-warn" id="geminiWarnRA">⚠️ <span>No respondiste ninguna pregunta de Reading A. Escribe tus respuestas antes de consultar con Gemini.</span></div>
         </div>
         <button class="update-btn" onclick="updateWithGeminiScores()">✅ Actualizar nota con puntajes Gemini</button>
       </div>
@@ -1448,105 +1457,35 @@ function buildSectionMsg(containerId, sectionName, score, total, checks, greenTh
 // GEMINI — AUTO-COPY + SUCCESS MODAL
 // ══════════════════════════════════════════
 function copyForGemini(section) {
-  let prompt = '';
+
+  // ── Validate: check if relevant fields are blank before sending ──
+  let hasContent = false;
+  let warnEl = null;
 
   if (section === 'la') {
-    const corr2 = g('la_corr2') || '(sin respuesta)';
-    const corr4 = g('la_corr4') || '(sin respuesta)';
-    prompt = `Eres un profesor de inglés de nivel B1 (CEFR) en Chile. Evalúa las correcciones de los ítems FALSOS de una sección de Listening True/False.
-
-El audio era sobre un tour en el Field Museum de Chicago.
-
-ÍTEM 2 — El enunciado decía: "Photography is not allowed in the Ancient Egypt exhibition."
-Esta afirmación es FALSA. La información correcta del audio es: "Photography is allowed in the exhibition, but flash is not permitted."
-CORRECCIÓN DEL ESTUDIANTE: ${corr2}
-
-ÍTEM 4 — El enunciado decía: "The gift shop closes at 3 pm."
-Esta afirmación es FALSA. La información correcta del audio es: "The gift shop closes at 2 pm."
-CORRECCIÓN DEL ESTUDIANTE: ${corr4}
-
-INSTRUCCIONES:
-- Este es un ejercicio de LISTENING, no de writing. Acepta errores ortográficos si el significado es correcto. Solo evalúa si el estudiante captó la información correcta del audio.
-- Puntaje: 1 punto si es correcta, 0 si es incorrecta.
-
-Responde en este formato exacto:
-ÍTEM 2: [0 o 1] — [justificación breve en español]
-ÍTEM 4: [0 o 1] — [justificación breve en español]`;
-
+    // Only check false items (2 and 4) — true items don't need correction
+    hasContent = !!(g('la_corr2').trim() || g('la_corr4').trim());
+    warnEl = document.getElementById('geminiWarnLA');
   } else if (section === 'ra') {
-    const ans1 = g('ra_ans1') || '(sin respuesta)';
-    const ans2 = g('ra_ans2') || '(sin respuesta)';
-    const ans3 = g('ra_ans3') || '(sin respuesta)';
-    const ans4 = g('ra_ans4') || '(sin respuesta)';
-    const ans5 = g('ra_ans5') || '(sin respuesta)';
-    prompt = `Eres un profesor de inglés de nivel B1 (CEFR) en Chile. Evalúa las respuestas de comprensión lectora.
-
-El texto era un email de Emma (estudiante de intercambio en Sydney) a Carlos. Emma lleva dos meses en Sydney, fue a Bondi Beach ayer con sus roommates a surfear, planea ir al Gold Coast y las Blue Mountains el próximo mes, ha cambiado (se levanta más temprano, hace ejercicio, mejoró su inglés), y vuelve el 20 de diciembre a las 10:30 pm.
-
-PREGUNTA 1 (1 pt): How long has Emma been in Sydney?
-Respuesta esperada: She has been in Sydney for two months.
-Respuesta del estudiante: ${ans1}
-
-PREGUNTA 2 (2 pts): What TWO activities is Emma planning to do next month? Mention two.
-Respuestas aceptables: visitar playas del Gold Coast / kayaking / explorar Blue Mountains.
-Respuesta del estudiante: ${ans2}
-
-PREGUNTA 3 (1 pt): Who did Emma go to Bondi Beach with?
-Respuesta esperada: She went with her roommates.
-Respuesta del estudiante: ${ans3}
-
-PREGUNTA 4 (2 pts): What TWO changes does Emma mention about her life?
-Respuestas aceptables: se levanta más temprano / hace ejercicio / su inglés ha mejorado.
-Respuesta del estudiante: ${ans4}
-
-PREGUNTA 5 (2 pts): Why does Emma say "it would be so great to see you"?
-Respuesta esperada: porque lleva meses lejos y extraña a Carlos.
-Respuesta del estudiante: ${ans5}
-
-INSTRUCCIONES:
-- Requiere oraciones completas. Acepta variaciones si la idea es correcta.
-- Para preguntas de 2 pts: 0.5 pts si la respuesta es parcialmente correcta.
-- Acepta errores ortográficos menores y errores de artículos.
-
-Responde en este formato exacto:
-P1: [0-1] — [justificación breve en español]
-P2: [0-2] — [justificación breve en español]
-P3: [0-1] — [justificación breve en español]
-P4: [0-2] — [justificación breve en español]
-P5: [0-2] — [justificación breve en español]
-TOTAL READING A: [suma] / 8`;
-
+    hasContent = ['ra_ans1','ra_ans2','ra_ans3','ra_ans4','ra_ans5']
+      .some(id => g(id).trim() !== '');
+    warnEl = document.getElementById('geminiWarnRA');
   } else if (section === 'w') {
-    const writing = g('writingText') || '(sin respuesta)';
-    prompt = `Eres un profesor de inglés de nivel B1 (CEFR) en Chile. Evalúa este email informal.
-
-ESTÍMULO: Email de Emma (intercambio en Sydney). Las 5 preguntas a responder:
-1. What are you eating for breakfast today? → Present continuous
-2. What did you do yesterday? → Simple past
-3. What are you doing this weekend? → Present continuous futuro
-4. How has your life changed since you started your English course? → Present perfect
-5. What time are you coming? → Present continuous futuro
-
-RESPUESTA DEL ESTUDIANTE:
-${writing}
-
-RÚBRICA:
-1. COHERENCIA Y EXTENSIÓN (máx. 4 pts): 4=80+palabras/todas las ideas · 3.2=60-79 · 2.4=40-59 · 1.2=20-39 · 0=menos de 20
-2. VOCABULARIO (máx. 3 pts): 3=6+palabras B1 · 2.4=5 · 1.8=4 · 0.9=3 · 0=2 o menos
-3. GRAMÁTICA (máx. 3 pts): 3=máx.1 error · 2.4=2-3 · 1.8=4-5 · 0.9=6-7 · 0=8+
-4. ORTOGRAFÍA (máx. 2 pts): 2=máx.2 errores · 1.6=3-4 · 1.2=5-6 · 0.6=7-8 · 0=9+
-
-NOTAS: Estudiante chileno B1. Acepta calcos del español, errores de artículos, errores de 3a persona. Evalúa si usó los tiempos verbales correctos.
-
-COHERENCIA Y EXTENSIÓN: [pts] / 4
-VOCABULARIO: [pts] / 3
-GRAMÁTICA: [pts] / 3
-ORTOGRAFÍA: [pts] / 2
-TOTAL WRITING: [suma] / 12
-COMENTARIOS: [máx. 3 líneas en español con feedback formativo]`;
+    hasContent = g('writingText').trim() !== '';
+    warnEl = document.getElementById('geminiWarnW');
   }
 
-  // Auto-copy to clipboard then show success modal
+  // Show/hide warning and block/unblock button
+  if (warnEl) {
+    if (!hasContent) {
+      warnEl.classList.add('visible');
+      return; // Block — do not copy or open modal
+    } else {
+      warnEl.classList.remove('visible');
+    }
+  }
+
+    // Auto-copy to clipboard then show success modal
   navigator.clipboard.writeText(prompt).then(() => {
     document.getElementById('geminiSuccessModal').classList.add('active');
   }).catch(() => {
