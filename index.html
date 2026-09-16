@@ -162,8 +162,6 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
 .results-card{background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid #6ee7b7;border-radius:16px;padding:30px;margin-bottom:24px;}
 .results-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
 .results-card h3{font-family:'DM Serif Display',serif;font-size:1.5em;color:#065f46;}
-.print-btn{background:linear-gradient(135deg,#64748b,#475569);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:.85em;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap;transition:opacity .2s;}
-.print-btn:hover{opacity:.85;}
 .score-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #a7f3d0;font-size:.95em;}
 .score-row:last-child{border-bottom:none;font-weight:700;font-size:1.05em;}
 .grade-display{text-align:center;margin-top:20px;padding:20px;background:#fff;border-radius:12px;border:2px solid #10b981;}
@@ -251,11 +249,15 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
 .modal-btn.cancel{background:#f1f5f9;color:var(--muted);}
 .modal-btn.go{background:linear-gradient(135deg,#4285F4,#34A853);color:#fff;box-shadow:0 4px 14px rgba(66,133,244,.3);}
 
-/* WARNING MODAL */
-.warning-modal-body p{margin-bottom:10px;}
-.warning-list{list-style:none;margin:14px 0;padding:0;}
-.warning-list li{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;margin-bottom:6px;font-size:.9em;font-weight:600;}
-.warning-list li.warn-item{background:#fff7ed;color:#92400e;border:1px solid #fde68a;}
+/* UNANSWERED BANNER (non-blocking) */
+#blankWarning{display:none;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:18px 22px;margin-top:20px;}
+#blankWarning strong{color:#92400e;font-size:.98em;}
+.blank-list{list-style:none;margin:12px 0;padding:0;}
+.blank-list li{margin-bottom:6px;}
+.blank-link{background:#fff;border:1px solid #fde68a;color:#92400e;padding:7px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.85em;font-weight:600;cursor:pointer;text-align:left;width:100%;transition:all .15s;}
+.blank-link:hover{background:#fef3c7;border-color:#f59e0b;}
+.dismiss-btn{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-family:'DM Sans',sans-serif;font-size:.88em;font-weight:600;cursor:pointer;margin-top:8px;transition:opacity .2s;}
+.dismiss-btn:hover{opacity:.88;}
 
 /* TOAST */
 #saveToast{display:none;position:fixed;bottom:22px;right:22px;background:var(--success);color:#fff;padding:10px 18px;border-radius:8px;font-size:.85em;font-weight:600;z-index:999;box-shadow:0 4px 14px rgba(16,185,129,.3);}
@@ -273,18 +275,6 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
 /* BLANK ANSWER BADGE */
 .blank-badge{display:inline-block;background:#fee2e2;color:#b91c1c;font-size:.78em;font-weight:700;padding:3px 10px;border-radius:20px;margin-left:8px;white-space:nowrap;}
 .gr-row input[type="number"].locked{background:#f1f5f9;color:var(--muted);border-color:var(--border);cursor:not-allowed;}
-
-/* PRINT */
-@media print{
-  body{background:#fff;padding:0;}
-  .container{box-shadow:none;border-radius:0;max-width:100%;}
-  .header,.progress-bar-wrap,.content>.info-box,.name-block,
-  .section,.calculate-btn,.filter-tabs,.print-btn,
-  #savedBanner,#saveToast,.modal-overlay,.gemini-review-block,
-  .instr-toggle,.instr-es,.email-toggle{display:none!important;}
-  #results{display:block!important;}
-  .feedback-item.hidden{display:block!important;}
-}
 
 /* RESPONSIVE */
 @media(max-width:768px){
@@ -323,20 +313,6 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
     <div class="modal-btns">
       <button class="modal-btn cancel" onclick="closeModal('geminiSuccessModal')">Cerrar</button>
       <button class="modal-btn go" onclick="closeModal('geminiSuccessModal');window.open('https://gemini.google.com/','_blank')">Abrir Gemini ↗</button>
-    </div>
-  </div>
-</div>
-
-<!-- WARNING MODAL -->
-<div class="modal-overlay" id="warningModal">
-  <div class="modal warning-modal-body">
-    <span class="modal-icon">⚠️</span>
-    <h3>Preguntas sin responder</h3>
-    <p>Tienes preguntas incompletas. Puedes ir a la primera sin responder o calcular de todas formas.</p>
-    <ul class="warning-list" id="warningList"></ul>
-    <div class="modal-btns">
-      <button class="modal-btn go" onclick="goToUnanswered()">Ir a la primera sin responder</button>
-      <button class="modal-btn cancel" onclick="forceCalculate()">Calcular de todas formas</button>
     </div>
   </div>
 </div>
@@ -519,49 +495,49 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
         </div>
 
         <div class="mc-grid">
-          <div class="mc-card">
+          <div class="mc-card" id="lb_card1">
             <div class="mc-card-q">1. The woman decides to…</div>
             <div class="mc-card-opts">
-              <label class="mc-opt"><input type="radio" name="lb_q1" value="A" onchange="saveAll();updateProgress()"> A) ask for some water</label>
-              <label class="mc-opt"><input type="radio" name="lb_q1" value="B" onchange="saveAll();updateProgress()"> B) call the waiter</label>
-              <label class="mc-opt"><input type="radio" name="lb_q1" value="C" onchange="saveAll();updateProgress()"> C) take a photo of the menu</label>
-              <label class="mc-opt"><input type="radio" name="lb_q1" value="D" onchange="saveAll();updateProgress()"> D) leave the restaurant</label>
+              <label class="mc-opt"><input type="radio" name="lb_q1" value="A" onchange="saveAll();updateProgress()"> a) ask for some water</label>
+              <label class="mc-opt"><input type="radio" name="lb_q1" value="B" onchange="saveAll();updateProgress()"> b) call the waiter</label>
+              <label class="mc-opt"><input type="radio" name="lb_q1" value="C" onchange="saveAll();updateProgress()"> c) take a photo of the menu</label>
+              <label class="mc-opt"><input type="radio" name="lb_q1" value="D" onchange="saveAll();updateProgress()"> d) leave the restaurant</label>
             </div>
           </div>
-          <div class="mc-card">
+          <div class="mc-card" id="lb_card2">
             <div class="mc-card-q">2. The train is late because…</div>
             <div class="mc-card-opts">
-              <label class="mc-opt"><input type="radio" name="lb_q2" value="A" onchange="saveAll();updateProgress()"> A) there is a technical problem</label>
-              <label class="mc-opt"><input type="radio" name="lb_q2" value="B" onchange="saveAll();updateProgress()"> B) the platform is closed</label>
-              <label class="mc-opt"><input type="radio" name="lb_q2" value="C" onchange="saveAll();updateProgress()"> C) the weather is bad</label>
-              <label class="mc-opt"><input type="radio" name="lb_q2" value="D" onchange="saveAll();updateProgress()"> D) there are too many passengers</label>
+              <label class="mc-opt"><input type="radio" name="lb_q2" value="A" onchange="saveAll();updateProgress()"> a) there is a technical problem</label>
+              <label class="mc-opt"><input type="radio" name="lb_q2" value="B" onchange="saveAll();updateProgress()"> b) the platform is closed</label>
+              <label class="mc-opt"><input type="radio" name="lb_q2" value="C" onchange="saveAll();updateProgress()"> c) the weather is bad</label>
+              <label class="mc-opt"><input type="radio" name="lb_q2" value="D" onchange="saveAll();updateProgress()"> d) there are too many passengers</label>
             </div>
           </div>
-          <div class="mc-card">
+          <div class="mc-card" id="lb_card3">
             <div class="mc-card-q">3. The woman is at the library to…</div>
             <div class="mc-card-opts">
-              <label class="mc-opt"><input type="radio" name="lb_q3" value="A" onchange="saveAll();updateProgress()"> A) return some magazines</label>
-              <label class="mc-opt"><input type="radio" name="lb_q3" value="B" onchange="saveAll();updateProgress()"> B) sign up for a reading club</label>
-              <label class="mc-opt"><input type="radio" name="lb_q3" value="C" onchange="saveAll();updateProgress()"> C) find a study room</label>
-              <label class="mc-opt"><input type="radio" name="lb_q3" value="D" onchange="saveAll();updateProgress()"> D) pick up a reserved book</label>
+              <label class="mc-opt"><input type="radio" name="lb_q3" value="A" onchange="saveAll();updateProgress()"> a) return some magazines</label>
+              <label class="mc-opt"><input type="radio" name="lb_q3" value="B" onchange="saveAll();updateProgress()"> b) sign up for a reading club</label>
+              <label class="mc-opt"><input type="radio" name="lb_q3" value="C" onchange="saveAll();updateProgress()"> c) find a study room</label>
+              <label class="mc-opt"><input type="radio" name="lb_q3" value="D" onchange="saveAll();updateProgress()"> d) pick up a reserved book</label>
             </div>
           </div>
-          <div class="mc-card">
+          <div class="mc-card" id="lb_card4">
             <div class="mc-card-q">4. The swimming pool is closed because…</div>
             <div class="mc-card-opts">
-              <label class="mc-opt"><input type="radio" name="lb_q4" value="A" onchange="saveAll();updateProgress()"> A) the gym is closing early</label>
-              <label class="mc-opt"><input type="radio" name="lb_q4" value="B" onchange="saveAll();updateProgress()"> B) they are cleaning it</label>
-              <label class="mc-opt"><input type="radio" name="lb_q4" value="C" onchange="saveAll();updateProgress()"> C) there are too many people</label>
-              <label class="mc-opt"><input type="radio" name="lb_q4" value="D" onchange="saveAll();updateProgress()"> D) the water is too cold</label>
+              <label class="mc-opt"><input type="radio" name="lb_q4" value="A" onchange="saveAll();updateProgress()"> a) the gym is closing early</label>
+              <label class="mc-opt"><input type="radio" name="lb_q4" value="B" onchange="saveAll();updateProgress()"> b) they are cleaning it</label>
+              <label class="mc-opt"><input type="radio" name="lb_q4" value="C" onchange="saveAll();updateProgress()"> c) there are too many people</label>
+              <label class="mc-opt"><input type="radio" name="lb_q4" value="D" onchange="saveAll();updateProgress()"> d) the water is too cold</label>
             </div>
           </div>
-          <div class="mc-card mc-grid-full">
+          <div class="mc-card mc-grid-full" id="lb_card5">
             <div class="mc-card-q">5. Mr. Williams is at the airport because…</div>
             <div class="mc-card-opts" style="display:grid;grid-template-columns:1fr 1fr;">
-              <label class="mc-opt"><input type="radio" name="lb_q5" value="A" onchange="saveAll();updateProgress()"> A) he needs to pick up his luggage</label>
-              <label class="mc-opt"><input type="radio" name="lb_q5" value="B" onchange="saveAll();updateProgress()"> B) he wants to change his flight</label>
-              <label class="mc-opt"><input type="radio" name="lb_q5" value="C" onchange="saveAll();updateProgress()"> C) he is going to fly to London</label>
-              <label class="mc-opt"><input type="radio" name="lb_q5" value="D" onchange="saveAll();updateProgress()"> D) he lost his boarding pass</label>
+              <label class="mc-opt"><input type="radio" name="lb_q5" value="A" onchange="saveAll();updateProgress()"> a) he needs to pick up his luggage</label>
+              <label class="mc-opt"><input type="radio" name="lb_q5" value="B" onchange="saveAll();updateProgress()"> b) he wants to change his flight</label>
+              <label class="mc-opt"><input type="radio" name="lb_q5" value="C" onchange="saveAll();updateProgress()"> c) he is going to fly to London</label>
+              <label class="mc-opt"><input type="radio" name="lb_q5" value="D" onchange="saveAll();updateProgress()"> d) he lost his boarding pass</label>
             </div>
           </div>
         </div>
@@ -740,7 +716,7 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
           <div class="rubric-title">📊 Rúbrica de evaluación — Writing (12 pts)</div>
           <div class="rubric-note">Completa esta rúbrica usando la evaluación por criterio que te entregó Gemini. Selecciona el nivel que Gemini indicó para cada criterio.</div>
 
-          <div class="criterion">
+          <div class="criterion" id="rubCriterion1">
             <h4>1. Coherencia y extensión <span style="color:var(--muted);font-weight:400;">(máx. 4 pts)</span></h4>
             <div class="criterion-options">
               <label><input type="radio" name="rub1" value="4" onchange="updateRubric();saveAll();updateProgress()">
@@ -756,7 +732,7 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
             </div>
           </div>
 
-          <div class="criterion">
+          <div class="criterion" id="rubCriterion2">
             <h4>2. Vocabulario <span style="color:var(--muted);font-weight:400;">(máx. 3 pts)</span></h4>
             <div class="criterion-options">
               <label><input type="radio" name="rub2" value="3" onchange="updateRubric();saveAll();updateProgress()">
@@ -772,7 +748,7 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
             </div>
           </div>
 
-          <div class="criterion">
+          <div class="criterion" id="rubCriterion3">
             <h4>3. Gramática <span style="color:var(--muted);font-weight:400;">(máx. 3 pts)</span></h4>
             <div class="criterion-options">
               <label><input type="radio" name="rub3" value="3" onchange="updateRubric();saveAll();updateProgress()">
@@ -788,7 +764,7 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
             </div>
           </div>
 
-          <div class="criterion">
+          <div class="criterion" id="rubCriterion4">
             <h4>4. Ortografía <span style="color:var(--muted);font-weight:400;">(máx. 2 pts)</span></h4>
             <div class="criterion-options">
               <label><input type="radio" name="rub4" value="2" onchange="updateRubric();saveAll();updateProgress()">
@@ -809,7 +785,15 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
       </div>
     </div>
 
-    <button class="calculate-btn" onclick="checkBeforeCalculate()">📊 Ver resultados y calcular nota</button>
+    <button class="calculate-btn" onclick="checkBlanksAndCalculate()">📊 Ver resultados y calcular nota</button>
+
+    <!-- UNANSWERED WARNING — non-blocking banner -->
+    <div id="blankWarning">
+      <strong>⚠️ Hay preguntas sin responder</strong>
+      <p style="font-size:.85em;color:#92400e;margin-top:6px;">Puedes ir directo a cada una haciendo clic en la lista, o continuar igual — las que dejes en blanco recibirán 0 puntos.</p>
+      <ul class="blank-list" id="blankList"></ul>
+      <button class="dismiss-btn" onclick="document.getElementById('blankWarning').style.display='none';calculateFinalGrade()">Continuar de todos modos →</button>
+    </div>
 
     <!-- ══════════ RESULTS ══════════ -->
     <div id="results">
@@ -817,7 +801,6 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
       <div class="results-card">
         <div class="results-card-header">
           <h3 id="resultsTitle">📊 Resultados del Mock Test</h3>
-          <button class="print-btn" onclick="printResults()">🖨️ Imprimir / Guardar PDF</button>
         </div>
         <div class="score-row"><span>🎧 Listening A — T/F auto</span><span id="res_la_auto">—</span></div>
         <div class="score-row"><span>🎧 Listening A — correcciones (Gemini)</span><span id="res_la_gemini">—</span></div>
@@ -874,24 +857,27 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
       <div id="feedbackSection" style="display:none;">
         <h3 style="font-family:'DM Serif Display',serif;font-size:1.3em;color:var(--text);margin-bottom:14px;">📝 Retroalimentación detallada</h3>
         <div class="filter-tabs" id="filterTabs" style="display:none;">
-          <button class="filter-tab active" data-filter="incorrect" onclick="filterFeedback('incorrect')">✗ Solo incorrectas</button>
-          <button class="filter-tab" data-filter="all" onclick="filterFeedback('all')">Todas las preguntas</button>
-          <button class="filter-tab" data-filter="correct" onclick="filterFeedback('correct')">✓ Solo correctas</button>
+          <button class="filter-tab" data-filter="all" onclick="filterFeedback('all')">Todas</button>
+          <button class="filter-tab" data-filter="listening" onclick="filterFeedback('listening')">🎧 Listening</button>
+          <button class="filter-tab" data-filter="reading" onclick="filterFeedback('reading')">📖 Reading</button>
+          <button class="filter-tab" data-filter="writing" onclick="filterFeedback('writing')">✍️ Writing</button>
+          <button class="filter-tab" data-filter="correct" onclick="filterFeedback('correct')">✓ Correctas</button>
+          <button class="filter-tab active" data-filter="incorrect" onclick="filterFeedback('incorrect')">✗ Incorrectas</button>
         </div>
         <div id="partialNote" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:11px 16px;font-size:.85em;color:#1e40af;margin-bottom:16px;">
           👁 Mostrando solo secciones auto-corregidas (Listening T/F, Listening B, Reading B). Reading A requiere revisión con Gemini.
         </div>
         <div id="sectionMsgListening"></div>
-        <div class="feedback-part">
+        <div class="feedback-part" data-section="listening">
           <div class="feedback-part-header listening">🎧 Listening — Part A (True / False)</div>
           <div id="fb_la"></div>
         </div>
-        <div class="feedback-part">
+        <div class="feedback-part" data-section="listening">
           <div class="feedback-part-header listening">🎧 Listening — Part B (Opción Múltiple)</div>
           <div id="fb_lb"></div>
         </div>
         <div id="sectionMsgReading"></div>
-        <div class="feedback-part">
+        <div class="feedback-part" data-section="reading">
           <div class="feedback-part-header reading">📖 Reading — Part B (Matching)</div>
           <div id="fb_rb"></div>
         </div>
@@ -977,6 +963,7 @@ function g(id) { const el=document.getElementById(id); return el?el.value:''; }
 function getRadio(name) { const c=document.querySelector(`input[name="${name}"]:checked`); return c?c.value:''; }
 
 function saveAll() {
+  checkForAnswers();
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
     const data = { studentName: g('studentName') };
@@ -1020,6 +1007,7 @@ function clearAllAnswers() {
     .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   localStorage.removeItem(SAVE_KEY);
   document.getElementById('results').style.display='none';
+  document.getElementById('blankWarning').style.display='none';
   autoGeminiDone=false;
   updateWordCount(); updateRubric(); updateProgress(); checkForAnswers(); flashToast();
 }
@@ -1045,49 +1033,62 @@ function updateRubric() {
 }
 
 // ══════════════════════════════════════════
-// BEFORE CALCULATE — CHECK UNANSWERED
+// BEFORE CALCULATE — NON-BLOCKING BLANK BANNER
 // ══════════════════════════════════════════
-function checkBeforeCalculate() {
-  const answered = updateProgress();
-  if (answered < TOTAL_QUESTIONS) {
-    const missingLA = ['la_tf1','la_tf2','la_tf3','la_tf4','la_tf5'].filter(id=>!g(id)).length;
-    const missingLB = MC_NAMES.filter(n=>!getRadio(n)).length;
-    const missingRA = ['ra_ans1','ra_ans2','ra_ans3','ra_ans4','ra_ans5'].filter(id=>!g(id).trim()).length;
-    const missingRB = ['rb_m1','rb_m2','rb_m3','rb_m4'].filter(id=>!g(id)).length;
-    const missingW  = g('writingText').trim()?0:1;
-    const missingRub= RUB_NAMES.filter(n=>!getRadio(n)).length;
-    const items=[];
-    if(missingLA) items.push(`${missingLA} ítem(s) de Listening A (T/F)`);
-    if(missingLB) items.push(`${missingLB} pregunta(s) de Listening B`);
-    if(missingRA) items.push(`${missingRA} pregunta(s) de Reading A`);
-    if(missingRB) items.push(`${missingRB} ítem(s) de Reading B`);
-    if(missingW)  items.push(`1 respuesta de Writing`);
-    if(missingRub) items.push(`${missingRub} criterio(s) de la rúbrica`);
-    const list=document.getElementById('warningList');
-    list.innerHTML=items.map(i=>`<li class="warn-item">⚠️ ${i}</li>`).join('');
-    document.getElementById('warningModal').classList.add('active');
-  } else {
+function checkBlanksAndCalculate() {
+  updateProgress();
+  const blanks = [];
+
+  ['la_tf1','la_tf2','la_tf3','la_tf4','la_tf5'].forEach((id,i) => {
+    if (!g(id)) blanks.push({ label: `Listening A — Ítem ${i+1} (T/F)`, targetId: id });
+  });
+  MC_NAMES.forEach((name,i) => {
+    if (!getRadio(name)) blanks.push({ label: `Listening B — Pregunta ${i+1}`, targetId: `lb_card${i+1}` });
+  });
+  ['ra_ans1','ra_ans2','ra_ans3','ra_ans4','ra_ans5'].forEach((id,i) => {
+    if (!g(id).trim()) blanks.push({ label: `Reading A — Pregunta ${i+1}`, targetId: id });
+  });
+  ['rb_m1','rb_m2','rb_m3','rb_m4'].forEach((id,i) => {
+    if (!g(id)) blanks.push({ label: `Reading B — Ítem ${i+1} (Matching)`, targetId: id });
+  });
+  if (!g('writingText').trim()) {
+    blanks.push({ label: 'Writing — Tu respuesta', targetId: 'writingText' });
+  }
+  RUB_NAMES.forEach((name,i) => {
+    if (!getRadio(name)) blanks.push({ label: `Rúbrica — Criterio ${i+1}`, targetId: `rubCriterion${i+1}` });
+  });
+
+  const banner = document.getElementById('blankWarning');
+  if (blanks.length === 0) {
+    banner.style.display = 'none';
     calculateFinalGrade();
+    return;
   }
+
+  const list = document.getElementById('blankList');
+  list.innerHTML = '';
+  blanks.forEach(b => {
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'blank-link';
+    btn.textContent = `➜ ${b.label}`;
+    btn.onclick = () => scrollToBlank(b.targetId);
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+  banner.style.display = 'block';
+  banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-function goToUnanswered() {
-  closeModal('warningModal');
-  // Search order: LA selects → LB radios → RA textareas → RB selects → Writing → Rubric
-  const checks = [
-    ()=>document.getElementById(['la_tf1','la_tf2','la_tf3','la_tf4','la_tf5'].find(id=>!g(id))),
-    ()=>{ const n=MC_NAMES.find(n=>!getRadio(n)); return n?document.querySelector(`input[name="${n}"]`):null; },
-    ()=>document.getElementById(['ra_ans1','ra_ans2','ra_ans3','ra_ans4','ra_ans5'].find(id=>!g(id).trim())),
-    ()=>document.getElementById(['rb_m1','rb_m2','rb_m3','rb_m4'].find(id=>!g(id))),
-    ()=>g('writingText').trim()?null:document.getElementById('writingText'),
-    ()=>{ const n=RUB_NAMES.find(n=>!getRadio(n)); return n?document.querySelector(`input[name="${n}"]`):null; }
-  ];
-  for (const fn of checks) {
-    const el=fn(); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.outline='3px solid #f59e0b'; setTimeout(()=>el.style.outline='',2500); break; }
-  }
+function scrollToBlank(targetId) {
+  const el = document.getElementById(targetId);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  el.style.outline = '3px solid #f59e0b';
+  setTimeout(() => { el.style.outline = ''; }, 2500);
+  if (typeof el.focus === 'function') setTimeout(() => el.focus(), 400);
 }
-
-function forceCalculate() { closeModal('warningModal'); calculateFinalGrade(); }
 
 // ══════════════════════════════════════════
 // GRADE CALC
@@ -1344,11 +1345,29 @@ function buildSummaryDots(la_auto,lb_auto,rb_auto,ra_g,la_gemini) {
 function filterFeedback(type) {
   document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll(`.filter-tab[data-filter="${type}"]`).forEach(t=>t.classList.add('active'));
-  document.querySelectorAll('.feedback-item').forEach(item=>{
-    if(type==='all') item.classList.remove('hidden');
-    else if(type==='incorrect') item.classList.toggle('hidden',item.classList.contains('fb-correct'));
-    else item.classList.toggle('hidden',item.classList.contains('fb-incorrect'));
-  });
+
+  const parts = document.querySelectorAll('.feedback-part');
+  const items = document.querySelectorAll('.feedback-item');
+
+  if (type === 'correct' || type === 'incorrect') {
+    // Show all parts, filter at item level
+    parts.forEach(p => p.style.display = 'block');
+    items.forEach(item => {
+      const isCorrect = item.classList.contains('fb-correct');
+      item.classList.toggle('hidden', type === 'correct' ? !isCorrect : isCorrect);
+    });
+    // Hide parts that have no visible items
+    parts.forEach(p => {
+      const visible = [...p.querySelectorAll('.feedback-item')].some(i => !i.classList.contains('hidden'));
+      p.style.display = visible ? 'block' : 'none';
+    });
+  } else {
+    // Section filter (all / listening / reading / writing) — show all items within visible parts
+    items.forEach(i => i.classList.remove('hidden'));
+    parts.forEach(p => {
+      p.style.display = (type === 'all' || p.dataset.section === type) ? 'block' : 'none';
+    });
+  }
 }
 
 function buildFeedback(la_auto,lb_auto,rb_auto) {
@@ -1454,7 +1473,7 @@ function buildSectionMsg(containerId, sectionName, score, total, checks, greenTh
 }
 
 // ══════════════════════════════════════════
-// GEMINI — AUTO-COPY + SUCCESS MODAL
+// GEMINI — AUTO-COPY + SUCCESS MODAL (decoupled from clipboard promise, Rule 23)
 // ══════════════════════════════════════════
 function copyForGemini(section) {
 
@@ -1604,15 +1623,16 @@ TOTAL WRITING: [suma] / 12
 COMENTARIOS: [máx. 3 líneas en español con feedback formativo]`;
   }
 
-  // ── Auto-copy to clipboard then show success modal ──
-  navigator.clipboard.writeText(geminiText).then(() => {
-    document.getElementById('geminiSuccessModal').classList.add('active');
-  }).catch(() => {
+  // ── Show confirmation modal immediately — decoupled from clipboard promise (Rule 23) ──
+  document.getElementById('geminiSuccessModal').classList.add('active');
+
+  // ── Attempt clipboard copy in the background; fall back silently if it fails ──
+  navigator.clipboard.writeText(geminiText).catch(() => {
     const ta = document.createElement('textarea');
     ta.value = geminiText; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
     document.body.removeChild(ta);
-    document.getElementById('geminiSuccessModal').classList.add('active');
   });
 }
 
@@ -1632,15 +1652,6 @@ function toggleInstr(id) {
   const open=box.style.display==='block';
   box.style.display=open?'none':'block';
   btn.textContent=open?'🌐 Ver en español':'🌐 Ocultar traducción';
-}
-
-// ══════════════════════════════════════════
-// PRINT
-// ══════════════════════════════════════════
-function printResults() {
-  document.querySelectorAll('.feedback-item').forEach(el=>el.classList.remove('hidden'));
-  window.print();
-  filterFeedback('incorrect');
 }
 
 // ══════════════════════════════════════════
