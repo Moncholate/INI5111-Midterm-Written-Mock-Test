@@ -308,7 +308,11 @@ audio{width:100%;border-radius:8px;margin-bottom:8px;}
     </div>
     <div class="modal-step">
       <span style="font-size:1.4em;">3️⃣</span>
-      <span>Ingresa el puntaje que Gemini te indique en los campos de esta página.</span>
+      <span><strong>Lee los comentarios</strong> que Gemini te da sobre tus errores — no te saltes directo al puntaje.</span>
+    </div>
+    <div class="modal-step">
+      <span style="font-size:1.4em;">4️⃣</span>
+      <span>Ingresa el puntaje del <strong>Bloque 2</strong> en los campos de esta página.</span>
     </div>
     <div class="modal-btns">
       <button class="modal-btn cancel" onclick="closeModal('geminiSuccessModal')">Cerrar</button>
@@ -1523,12 +1527,14 @@ CORRECCIÓN DEL ESTUDIANTE: ${corr4}
 INSTRUCCIONES:
 - Este es un ejercicio de LISTENING, no de writing. Acepta errores ortográficos si el significado es correcto. Solo evalúa si el estudiante captó la información correcta del audio.
 - Puntaje: 1 punto si es correcta, 0 si es incorrecta.
+- IMPORTANTE: SIEMPRE entrega el BLOQUE 1 completo con retroalimentación real, incluso si el estudiante obtuvo el puntaje máximo en ambos ítems. Nunca respondas solo con el puntaje — explica qué captó bien o qué le faltó.
 
 Responde SIEMPRE en este formato exacto, con dos bloques separados:
 
-BLOQUE 1 — EVALUACIÓN:
-ÍTEM 2: [puntaje] — [justificación breve en español]
-ÍTEM 4: [puntaje] — [justificación breve en español]
+BLOQUE 1 — RETROALIMENTACIÓN (no la omitas ni la resumas en una sola línea):
+ÍTEM 2: [puntaje] — [explica en 1-2 líneas si la corrección del estudiante capturó la información correcta del audio; si le faltó algo o cometió un error de comprensión, dilo explícitamente]
+ÍTEM 4: [puntaje] — [misma explicación detallada para este ítem]
+💡 Consejo general: [1-2 líneas sobre qué tipo de información debería priorizar el estudiante al escuchar — excepciones, horarios, números — según los errores que cometió, o felicítalo si no tuvo errores]
 
 BLOQUE 2 — PUNTAJES PARA INGRESAR EN EL MOCK TEST:
 ┌──────────────────────────────────────┐
@@ -1572,15 +1578,18 @@ INSTRUCCIONES:
 - Requiere oraciones completas. Acepta variaciones si la idea es correcta.
 - Para preguntas de 2 pts: 0.5 pts si la respuesta es parcialmente correcta.
 - Acepta errores ortográficos menores y errores de artículos.
+- IMPORTANTE: SIEMPRE entrega el BLOQUE 1 completo con retroalimentación real y específica para cada pregunta, incluso si el puntaje es máximo. Nunca respondas solo con el puntaje — explica qué respondió bien o qué le faltó en cada una.
 
 Responde SIEMPRE en este formato exacto, con dos bloques separados:
 
-BLOQUE 1 — EVALUACIÓN:
-P1: [puntaje] — [justificación breve en español]
-P2: [puntaje] — [justificación breve en español]
-P3: [puntaje] — [justificación breve en español]
-P4: [puntaje] — [justificación breve en español]
-P5: [puntaje] — [justificación breve en español]
+BLOQUE 1 — RETROALIMENTACIÓN (no la omitas ni la resumas en una sola línea):
+💬 Comentario general: [2-3 líneas sobre el desempeño global en comprensión lectora]
+P1: [puntaje] — [explica qué respondió bien o qué le faltó; si hay un error de comprensión, indícalo explícitamente]
+P2: [puntaje] — [misma explicación detallada]
+P3: [puntaje] — [misma explicación detallada]
+P4: [puntaje] — [misma explicación detallada]
+P5: [puntaje] — [misma explicación detallada]
+💡 Sugerencias de mejora: [1-2 sugerencias concretas y accionables para futuras lecturas]
 
 BLOQUE 2 — PUNTAJES PARA INGRESAR EN EL MOCK TEST:
 ┌─────────────────────────────────────┐
@@ -1614,13 +1623,31 @@ RÚBRICA:
 4. ORTOGRAFÍA (máx. 2 pts): 2=máx.2 errores · 1.6=3-4 · 1.2=5-6 · 0.6=7-8 · 0=9+
 
 NOTAS: Estudiante chileno B1. Acepta calcos del español, errores de artículos, errores de 3a persona. Evalúa si usó los tiempos verbales correctos.
+IMPORTANTE: SIEMPRE entrega el BLOQUE 1 completo y detallado, sin importar qué tan alto o bajo sea el puntaje. Nunca respondas solo con los puntajes — el estudiante necesita comentarios concretos sobre SU propio texto para aprender de sus errores.
 
-COHERENCIA Y EXTENSIÓN: [pts] / 4
-VOCABULARIO: [pts] / 3
-GRAMÁTICA: [pts] / 3
-ORTOGRAFÍA: [pts] / 2
-TOTAL WRITING: [suma] / 12
-COMENTARIOS: [máx. 3 líneas en español con feedback formativo]`;
+Responde SIEMPRE en este formato exacto, con dos bloques separados:
+
+BLOQUE 1 — RETROALIMENTACIÓN (no la omitas ni la resumas en una sola línea):
+⚠️ Advertencia de autenticidad: [señala si el texto muestra señales de uso de IA/traductor: vocabulario muy avanzado para B1, ausencia de errores típicos de interferencia del español, fluidez o coherencia inusualmente alta, conectores o modismos avanzados. Si no hay señales, dilo explícitamente.]
+💬 Comentario general: [2-3 líneas sobre el desempeño global del email]
+📊 Evaluación por criterio:
+- Coherencia y extensión: [pts] / 4 — [justificación breve]
+- Vocabulario: [pts] / 3 — [justificación breve]
+- Gramática: [pts] / 3 — [justificación breve]
+- Ortografía: [pts] / 2 — [justificación breve]
+✗ Errores específicos: [cita entre 3 y 6 errores REALES tomados textualmente de la respuesta del estudiante, en formato "✗ [frase con el error] → ✓ [corrección]". Si el texto está prácticamente libre de errores, dilo explícitamente en vez de inventar errores.]
+💡 Sugerencias de mejora: [2-3 sugerencias concretas y accionables para el próximo texto]
+🎯 Cierre: [1-2 líneas de cierre motivador en español]
+
+BLOQUE 2 — PUNTAJES PARA INGRESAR EN EL MOCK TEST:
+┌──────────────────────────────────────────────┐
+│ Coherencia y extensión (máx. 4 pts): [pts]   │
+│ Vocabulario (máx. 3 pts):            [pts]   │
+│ Gramática (máx. 3 pts):              [pts]   │
+│ Ortografía (máx. 2 pts):             [pts]   │
+│ TOTAL WRITING:                [suma] / 12 pts │
+└──────────────────────────────────────────────┘
+Ingresa cada puntaje del Bloque 2 en el campo correspondiente del mock test.`;
   }
 
   // ── Show confirmation modal immediately — decoupled from clipboard promise (Rule 23) ──
